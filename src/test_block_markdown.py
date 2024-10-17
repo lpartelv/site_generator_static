@@ -1,5 +1,5 @@
 import unittest
-from block_markdown import markdown_to_blocks
+from block_markdown import *
 
 
 class TestMarkdownToHTML(unittest.TestCase):
@@ -45,6 +45,14 @@ This is the same paragraph on a new line
                 "* This is a list\n* with items",
             ],
         )
+    
+    def test_block_newlines(self):
+        self.assertEqual(block_to_block_type("This is **bolded** paragraph"), "paragraph")
+        self.assertEqual(block_to_block_type("* This is a list\n* with items"), "unordered_list")
+        self.assertEqual(block_to_block_type("- This is a list\n- with items"), "unordered_list")
+        self.assertEqual(block_to_block_type("* This is a list\n- with items"), "paragraph")
+        self.assertEqual(block_to_block_type("```This is **bolded** paragraph```"), "code")
+        self.assertEqual(block_to_block_type(">This is **bolded** paragraph"), "quote")
 
 
 if __name__ == "__main__":
