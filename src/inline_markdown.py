@@ -1,7 +1,10 @@
 import re
 
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node
 
+def text_nodes_to_html_nodes(nodes):
+    htmlnodes = list(map(text_node_to_html_node, nodes))
+    return htmlnodes
 
 def text_to_textnodes(text):
     nodes = [TextNode(text, TextType.TEXT)]
