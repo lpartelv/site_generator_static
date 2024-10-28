@@ -29,7 +29,18 @@ def generate_page(from_path, template_path, dest_path):
         os.mkdir(dest_path.split("/")[0])
     with open(dest_path, "a", encoding='utf-8') as dest_file:
         dest_file.write(template_data)
-    
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    entry_list = os.listdir(dir_path_content)
+    for entry in entry_list:
+        from_path = os.path.join(dir_path_content, entry)
+        if os.path.isfile(from_path):
+            to_path = os.path.join(dest_dir_path, entry.replace(".md", ".html"))
+            generate_page(from_path, template_path, to_path)
+        else:
+            to_path = os.path.join(dest_dir_path, entry)
+            os.mkdir(to_path)
+            generate_pages_recursive(from_path, template_path, to_path)
 
 def main():
     src = "./static"
@@ -37,6 +48,6 @@ def main():
     if os.path.exists(dst):
         shutil.rmtree(dst)
     copy_paste_dir(src, dst)
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content/", "template.html", "public/")
 
 main()
