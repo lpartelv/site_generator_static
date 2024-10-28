@@ -2,6 +2,9 @@ import re
 from inline_markdown import *
 from htmlnode import *
 
+def extract_title(markdown):
+    match = re.findall(r"(?<!#)\# (.+)", markdown)
+    return match[0].strip()
 
 def markdown_to_blocks(markdown):
     blocks = markdown.split("\n\n")

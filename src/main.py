@@ -1,6 +1,8 @@
 from textnode import *
 import os
 import shutil
+from block_markdown import markdown_to_html_node, extract_title
+from htmlnode import *
 
 def copy_paste_dir(src, dst):
     if not os.path.exists(dst):
@@ -14,11 +16,27 @@ def copy_paste_dir(src, dst):
         else:
             copy_paste_dir(from_path, to_path)
 
+def generate_page(from_path, template_path, dest_path):
+    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+    with open(from_path, encoding='utf-8') as src_file:
+        src_data = src_file.read()
+    with open(template_path, encoding='utf-8') as template_file:
+        template_data = template_file.read()
+    markdown_html = markdown_to_html_node(src_data).to_html()
+    title = extract_title(src_data)
+    template_data = template_data.replace("{{ Title }}", title).replace("{{ Content }}", markdown_html)
+    if not os.path.exists(dest_path.split("/")[0]):
+        os.mkdir(dest_path.split("/")[0])
+    with open(dest_path, "a", encoding='utf-8') as dest_file:
+        dest_file.write(template_data)
+    
+
 def main():
     src = "./static"
     dst = "./public"
     if os.path.exists(dst):
         shutil.rmtree(dst)
     copy_paste_dir(src, dst)
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 main()
